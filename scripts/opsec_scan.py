@@ -20,6 +20,7 @@ _win_users = "C:" + "\\\\" + "Users" + "\\\\"
 _mac_users = "/" + "Users" + "/"
 _htb_token = "H" + "TB"
 _htb_phrase = "Hack" + "The" + "Box"
+_htb_compact = _htb_phrase.replace(" ", "")
 
 
 def _is_rfc5737(ip: ipaddress.IPv4Address) -> bool:
@@ -105,7 +106,7 @@ def scan_file(path: Path) -> list[dict[str, str]]:
                     "snippet": _redact_line(line, match.start(), match.end()),
                 }
             )
-        htb_pattern = r"\b(" + re.escape(_htb_token) + r"|" + re.escape(_htb_phrase) + r"|" + re.escape(_htb_phrase.replace(\" \", \"\")) + r")\b"
+        htb_pattern = r"\b(" + re.escape(_htb_token) + r"|" + re.escape(_htb_phrase) + r"|" + re.escape(_htb_compact) + r")\b"
         for match in re.finditer(htb_pattern, line, re.IGNORECASE):
             findings.append(
                 {
