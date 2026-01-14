@@ -1,0 +1,10 @@
+{"metadata": {"source": "examples/mock_inputs/linpeas_raw.txt", "schema": "don-trabajo-linpeas-v1", "version": "1.0.0"},
+ "users": ["root", "demo"],
+ "suid_binaries": ["/usr/bin/passwd", "/usr/bin/sudo"],
+ "kernel": {"raw": "Linux version 5.4.0-81-generic", "version": "5.4.0-81"},
+ "ip_addresses": ["203.0.113.10"],
+ "binaries": [
+  {"name": "sudo", "version": "1.8.31"},
+  {"name": "sshd", "version": "8.2"}
+ ]
+}
