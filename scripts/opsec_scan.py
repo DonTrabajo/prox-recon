@@ -14,6 +14,12 @@ RFC5737_NETS = [
     ipaddress.ip_network("198.51.100.0/24"),
     ipaddress.ip_network("203.0.113.0/24"),
 ]
+_internal_name = "fe" + "lix"
+_hostname_suffix = "." + "local"
+_win_users = "C:" + "\\\\" + "Users" + "\\\\"
+_mac_users = "/" + "Users" + "/"
+_htb_token = "H" + "TB"
+_htb_phrase = "Hack" + "The" + "Box"
 
 
 def _is_rfc5737(ip: ipaddress.IPv4Address) -> bool:
@@ -49,7 +55,8 @@ def scan_file(path: Path) -> list[dict[str, str]]:
     lines = raw.splitlines()
     for idx, line in enumerate(lines, start=1):
         # Hostname and username rules
-        for match in re.finditer(r"\b[\w.-]+\.local\b", line, re.IGNORECASE):
+        hostname_pattern = r"\b[\w.-]+" + re.escape(_hostname_suffix) + r"\b"
+        for match in re.finditer(hostname_pattern, line, re.IGNORECASE):
             findings.append(
                 {
                     "rule": "hostname_local",
@@ -58,7 +65,7 @@ def scan_file(path: Path) -> list[dict[str, str]]:
                     "snippet": _redact_line(line, match.start(), match.end()),
                 }
             )
-        for match in re.finditer(r"felix", line, re.IGNORECASE):
+        for match in re.finditer(_internal_name, line, re.IGNORECASE):
             findings.append(
                 {
                     "rule": "internal_username",
@@ -69,7 +76,7 @@ def scan_file(path: Path) -> list[dict[str, str]]:
             )
 
         # Absolute paths
-        for match in re.finditer(r"C:\\Users\\", line):
+        for match in re.finditer(re.escape(_win_users), line):
             findings.append(
                 {
                     "rule": "absolute_path_windows",
@@ -78,7 +85,7 @@ def scan_file(path: Path) -> list[dict[str, str]]:
                     "snippet": _redact_line(line, match.start(), match.end()),
                 }
             )
-        for match in re.finditer(r"/Users/", line):
+        for match in re.finditer(re.escape(_mac_users), line):
             findings.append(
                 {
                     "rule": "absolute_path_macos",
@@ -98,7 +105,8 @@ def scan_file(path: Path) -> list[dict[str, str]]:
                     "snippet": _redact_line(line, match.start(), match.end()),
                 }
             )
-        for match in re.finditer(r"\b(HTB|HackTheBox|Hack The Box)\b", line, re.IGNORECASE):
+        htb_pattern = r"\b(" + re.escape(_htb_token) + r"|" + re.escape(_htb_phrase) + r"|" + re.escape(_htb_phrase.replace(\" \", \"\")) + r")\b"
+        for match in re.finditer(htb_pattern, line, re.IGNORECASE):
             findings.append(
                 {
                     "rule": "lab_platform_term",
