@@ -1,13 +1,15 @@
-# DonTrabajoGPT (Public Core)
+# DonTrabajoGPT-Core (Public-Safe)
 
-This is the public-safe core of DonTrabajoGPT. It focuses on local parsing and reporting workflows using mock data, with all operational and lab-specific materials excluded.
+This repository is the **public-safe core** of DonTrabajoGPT. It ships a small,
+local recon pipeline (linPEAS parsing + CVE matching) and a deterministic demo
+report built from mock inputs.
 
 What is intentionally excluded (OPSEC):
-- operational runbooks and init workflows
-- lab-specific notes, targets, credentials, or flags
-- internal hostnames and absolute host paths
-- non-sample IP addresses
-- logs, state files, or local artifacts
+- operational notes and runbooks
+- lab-specific workflows, targets, credentials, or flags
+- internal KB/mesh tooling, personas, and the TUI
+- internal hostnames, absolute host paths, and non-sample IPs
+- logs, state files, and local artifacts
 
 Quickstart (Windows, PowerShell):
 ```powershell
@@ -29,6 +31,10 @@ Demo command:
 ```bash
 python -m tools.demo
 ```
+
+Verification gates:
+- `scripts/preflight.ps1` runs the demo and OPSEC scans locally.
+- CI runs the demo plus OPSEC scan on every push/PR.
 
 Repo structure:
 - `prox_ops/` core recon parsing modules
