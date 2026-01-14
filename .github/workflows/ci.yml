@@ -27,4 +27,4 @@ jobs:
 
       - name: OPSEC scan
         run: |
-          python scripts/opsec_scan.py --root .
+          python scripts/opsec_scan.py --root . --exclude scripts/opsec_testdata
