@@ -35,6 +35,9 @@ python -m tools.demo
 Verification gates:
 - `scripts/preflight.ps1` runs the demo and OPSEC scans locally.
 - CI runs the demo plus OPSEC scan on every push/PR.
+The file `scripts/opsec_testdata/should_fail.txt` intentionally contains banned
+patterns to validate the scanner. CI excludes `scripts/opsec_testdata` by
+design so the repository can remain publish-safe.
 
 Repo structure:
 - `prox_ops/` core recon parsing modules
