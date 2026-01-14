@@ -14,7 +14,12 @@ try {
         exit $LASTEXITCODE
     }
 
-    & (Join-Path $PSScriptRoot "opsec_scan.ps1")
+    & python (Join-Path $PSScriptRoot "opsec_scan.py") --root $repoRoot --exclude scripts/opsec_testdata
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
+
+    & (Join-Path $PSScriptRoot "opsec_selftest.ps1")
     exit $LASTEXITCODE
 }
 finally {

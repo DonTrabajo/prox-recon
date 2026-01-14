@@ -31,7 +31,7 @@ def _redact_line(line: str, start: int, end: int) -> str:
     return f"{line[:start]}[REDACTED]{line[end:]}"
 
 
-def _iter_text_files(root: Path) -> Iterable[Path]:
+def _iter_text_files(root: Path, exclude: list[Path]) -> Iterable[Path]:
     skip_dirs = {".git", ".venv", "venv", "__pycache__"}
     for path in root.rglob("*"):
         if path.is_dir():
@@ -40,6 +40,8 @@ def _iter_text_files(root: Path) -> Iterable[Path]:
         if not path.is_file():
             continue
         if any(part in skip_dirs for part in path.parts):
+            continue
+        if any(path.is_relative_to(item) for item in exclude):
             continue
         if path.name in {"opsec_scan.py", "opsec_scan.ps1"}:
             continue
@@ -168,11 +170,18 @@ def main() -> int:
         default=str(Path(__file__).resolve().parents[1]),
         help="Repo root to scan",
     )
+    parser.add_argument(
+        "--exclude",
+        action="append",
+        default=[],
+        help="Relative paths to exclude from scanning.",
+    )
     args = parser.parse_args()
     root = Path(args.root)
+    exclude_paths = [root / Path(item) for item in args.exclude]
 
     all_findings: list[dict[str, str]] = []
-    for path in _iter_text_files(root):
+    for path in _iter_text_files(root, exclude_paths):
         all_findings.extend(scan_file(path))
 
     if all_findings:

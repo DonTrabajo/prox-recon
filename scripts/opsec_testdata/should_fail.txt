@@ -1,0 +1,8 @@
+felix
+example.local
+C:\Users\Example\Secret
+10.10.10.10
+AKIAAAAAAAAAAAAAAAAA
+
+ghp_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+BEGIN RSA PRIVATE KEY
