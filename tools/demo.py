@@ -16,7 +16,7 @@ def _build_report(data: dict, matches: list[dict]) -> str:
     binaries = data.get("binaries", [])
 
     lines = [
-        "# DonTrabajoGPT Demo Report",
+        "# Prox Recon Demo Report",
         "",
         "## Summary",
         f"- Users: {len(users)}",
@@ -58,7 +58,7 @@ def main() -> int:
 
     rel_path = output_path.relative_to(repo_root)
     print(f"Demo report written to: {rel_path}")
-    print("Report title: DonTrabajoGPT Demo Report")
+    print("Report title: Prox Recon Demo Report")
     return 0
 
 

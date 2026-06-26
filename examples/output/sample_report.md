@@ -1,4 +1,4 @@
-# DonTrabajoGPT Demo Report
+# Prox Recon Demo Report
 
 ## Summary
 - Users: 2

@@ -1,52 +1,47 @@
-# DonTrabajoGPT-Core (Public-Safe)
+# Prox Recon
 
-This repository is the **public-safe core** of DonTrabajoGPT. It ships a small,
-local recon pipeline (linPEAS parsing + CVE matching) and a deterministic demo
-report built from mock inputs.
+**Offline-first reconnaissance core — linPEAS parsing + CVE matching, with CI-enforced OPSEC gates.**
 
-What is intentionally excluded (OPSEC):
-- operational notes and runbooks
-- lab-specific workflows, targets, credentials, or flags
-- internal KB/mesh tooling, personas, and the TUI
-- internal hostnames, absolute host paths, and non-sample IPs
-- logs, state files, and local artifacts
+The public core of [Prox Offensive](https://proxoffensive.com)'s recon tooling. It turns
+raw linPEAS output into ranked, reviewable findings, and ships a deterministic demo report
+built from mock inputs so you can see the output shape without touching a real target.
 
-Quickstart (Windows, PowerShell):
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python -m tools.demo
-```
+Runs locally. No cloud calls, no telemetry — sensitive enumeration stays on your machine.
 
-Quickstart (macOS/Linux, bash):
+> Part of the Prox Suite. The full operational kit (mesh orchestration, pivot/exploit
+> modules, TUI) is kept private by design; this repo is the publishable core.
+
+## What it does
+- **linPEAS pipeline** — preprocess → parse → triage raw linPEAS into structured findings
+- **CVE matcher** — extract and rank candidate CVEs from parsed JSON
+- **Deterministic demo** — `python3 -m tools.demo` builds a sample report from mock inputs
+
+## What's intentionally excluded (OPSEC)
+Engineered to be publish-safe. It does not contain operational notes/runbooks,
+lab-specific targets/credentials/flags, internal KB/mesh tooling, personas, the TUI,
+internal hostnames or non-sample IPs, or logs/state. A CI gate (`scripts/opsec_scan.py`)
+blocks these patterns on every push and PR.
+
+## Quickstart
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python -m tools.demo
+python3 -m tools.demo
 ```
+Windows (PowerShell): `python -m venv .venv; .\.venv\Scripts\Activate.ps1; pip install -r requirements.txt; python -m tools.demo`
 
-Demo command:
-```bash
-python -m tools.demo
-```
+## Verification gates
+- `scripts/preflight.ps1` runs the demo + OPSEC scan locally.
+- CI runs the demo + OPSEC scan on every push/PR.
+- `scripts/opsec_testdata/should_fail.txt` deliberately holds banned patterns to prove the
+  scanner works; CI excludes that directory so the repo stays publish-safe.
 
-Verification gates:
-- `scripts/preflight.ps1` runs the demo and OPSEC scans locally.
-- CI runs the demo plus OPSEC scan on every push/PR.
-The file `scripts/opsec_testdata/should_fail.txt` intentionally contains banned
-patterns to validate the scanner. CI excludes `scripts/opsec_testdata` by
-design so the repository can remain publish-safe.
+## Layout
+`prox_ops/` recon parsing · `tools/` demo entrypoint · `examples/` mock inputs + generated report · `docs/` ARCHITECTURE + SECURITY · `scripts/` preflight + OPSEC scan
 
-Repo structure:
-- `prox_ops/` core recon parsing modules
-- `tools/` demo entrypoint
-- `examples/mock_inputs/` sanitized sample inputs
-- `examples/output/` generated demo report
-- `docs/` architecture and security notes
-- `scripts/` preflight and OPSEC scanning
+## Related
+- [ai-redteam-lab](https://github.com/DonTrabajo/ai-redteam-lab) — adversarial test harness for LLMs
+- [recon-audit-sample](https://github.com/DonTrabajo/recon-audit-sample) — sample client-facing recon report
 
-Docs:
-- `docs/ARCHITECTURE.md`
-- `docs/SECURITY.md`
+## License
+MIT — see [LICENSE](LICENSE).
