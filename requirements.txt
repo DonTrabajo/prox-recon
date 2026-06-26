@@ -1,1 +1,6 @@
 rich
+
+# Optional: only needed for the opt-in LLM triage layer (tools/demo.py --llm).
+# The core recon pipeline + deterministic demo run without these.
+openai
+python-dotenv

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -44,6 +45,14 @@ def _build_report(data: dict, matches: list[dict]) -> str:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Prox Recon deterministic demo runner.")
+    parser.add_argument(
+        "--llm",
+        action="store_true",
+        help="Also run the optional LLM triage layer (requires an endpoint configured in .env).",
+    )
+    args = parser.parse_args()
+
     repo_root = Path(__file__).resolve().parents[1]
     input_path = repo_root / "examples" / "mock_inputs" / "linpeas_parsed.json"
     output_dir = repo_root / "examples" / "output"
@@ -59,6 +68,20 @@ def main() -> int:
     rel_path = output_path.relative_to(repo_root)
     print(f"Demo report written to: {rel_path}")
     print("Report title: Prox Recon Demo Report")
+
+    if args.llm:
+        # Optional, opt-in: only imported when requested so the default demo has no
+        # network-stack dependencies and stays fully offline/deterministic.
+        try:
+            from prox_ops.recon.gpt_analysis import run_gpt_analysis
+        except ImportError:
+            print(
+                "LLM triage needs the optional deps. Install them with: "
+                "pip install openai python-dotenv"
+            )
+            return 0
+        run_gpt_analysis(data)
+
     return 0
 
 

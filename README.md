@@ -6,7 +6,9 @@ The public core of [Prox Offensive](https://proxoffensive.com)'s recon tooling. 
 raw linPEAS output into ranked, reviewable findings, and ships a deterministic demo report
 built from mock inputs so you can see the output shape without touching a real target.
 
-Runs locally. No cloud calls, no telemetry — sensitive enumeration stays on your machine.
+The recon pipeline runs locally with no telemetry — sensitive enumeration stays on your
+machine. The only network-capable piece is the **opt-in** LLM triage layer, which is off
+by default and talks to whatever endpoint you point it at (local Ollama included).
 
 > Part of the Prox Suite. The full operational kit (mesh orchestration, pivot/exploit
 > modules, TUI) is kept private by design; this repo is the publishable core.
@@ -15,6 +17,8 @@ Runs locally. No cloud calls, no telemetry — sensitive enumeration stays on yo
 - **linPEAS pipeline** — preprocess → parse → triage raw linPEAS into structured findings
 - **CVE matcher** — extract and rank candidate CVEs from parsed JSON
 - **Deterministic demo** — `python3 -m tools.demo` builds a sample report from mock inputs
+- **Optional LLM triage** — `python3 -m tools.demo --llm` ranks escalation paths via an
+  endpoint *you* choose (local Ollama or hosted). Opt-in and off by default
 
 ## What's intentionally excluded (OPSEC)
 Engineered to be publish-safe. It does not contain operational notes/runbooks,
@@ -29,6 +33,15 @@ pip install -r requirements.txt
 python3 -m tools.demo
 ```
 Windows (PowerShell): `python -m venv .venv; .\.venv\Scripts\Activate.ps1; pip install -r requirements.txt; python -m tools.demo`
+
+### Optional: LLM triage
+The default demo is fully offline and deterministic. To also rank escalation paths with an
+LLM, copy `.env.example` to `.env`, set an endpoint, and add `--llm`:
+```bash
+cp .env.example .env   # set OPENAI_BASE_URL (e.g. http://localhost:11434/v1 for Ollama) + key
+python3 -m tools.demo --llm
+```
+Enumeration still happens locally; only the parsed summary is sent to the endpoint you choose.
 
 ## Verification gates
 - `scripts/preflight.ps1` runs the demo + OPSEC scan locally.

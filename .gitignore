@@ -6,3 +6,8 @@ __pycache__/
 *.log
 *.jsonl
 .DS_Store
+
+# Secrets — never commit real credentials (.env.example is the safe template)
+.env
+.env.*
+!.env.example
